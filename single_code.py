@@ -11,7 +11,12 @@ data = {
 page = requests.post(url=url, data=data)
 soup = BeautifulSoup(markup=page.content, features='html.parser')
 
-events = soup.find_all(name="table", class_="listEvent sro")
+events = soup.find_all(namew="table", class_="listEvent sro")
+
+print('Rastreio do código ' + data['objetos'] + ':')
+
+if len(events) == 0:
+    print('Código não encontrado na base dos Correios BR.')
 
 for event in events:
     date_raw = event.find_all(name="td", class_="sroDtEvent")[0].text
