@@ -13,7 +13,7 @@ data = {
 print('Rastreio dos códigos ' + data['objetos'] + ':\n')
 
 # Remove os espaços e ; para entrar no sistema dos correios
-aux_codes = re.sub('\s+', '', data['objetos'])
+aux_codes = re.sub(r'\s+', '', data['objetos'])
 data['objetos'] = re.sub(';+', '', aux_codes)
 
 page = requests.post(url=url, data=data)
