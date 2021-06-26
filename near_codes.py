@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import re
-
+from datetime import date
 from typing import List
 
 
@@ -28,6 +28,7 @@ def web_scrape_tracking_data(tracking_code_list: List[str], skip_not_found: bool
         print('Resultado não encontrado na base dos Correios BR.')
 
     not_found_str = 'O nosso sistema não possui dados sobre o objeto informado.'
+    today_str = date.today().strftime("%d/%m/%y")
 
     for td in tables:
         find_code = re.match(pattern=r'[A-Za-z]{2}[0-9]{9}[A-Za-z]{2}',
@@ -41,10 +42,12 @@ def web_scrape_tracking_data(tracking_code_list: List[str], skip_not_found: bool
         else:
             if not_found != -1:
                 if skip_not_found is False:
-                    print(f'{tracking_code}: \t{not_found_str}')
+                    print('{:13s}\t{:10s}\t{:20s}\t{}'.format(tracking_code, today_str, '', not_found_str))
             else:
                 if find_date:
-                    print(f'{tracking_code} - \t{find_date.string}: \t{event_str}')
+                    location = find_date.string[10:].strip()
+                    print('{:13s}\t{:10s}\t{:20s}\t{}'.format(tracking_code, find_date.group(),
+                                                               location, event_str))
                 else:
                     event_str = td.text
 
@@ -64,6 +67,8 @@ def generate_and_print_near_codes(base_code: str, num_above: int, num_below: int
 
     below_tracking_code_list = []
     above_tracking_code_list = []
+
+    print('{:13s}\t{:10s}\t{:20s}\t{}'.format('Código', 'Data', 'Local', 'Evento'))
 
     base_number = int(base_code[2:10])
 
