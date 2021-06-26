@@ -6,6 +6,7 @@ url = "https://www2.correios.com.br/sistemas/rastreamento/ctrl/ctrlRastreamento.
 data = {
     "acao": "tracks",
     # Código de rastreio aqui no formato AA000000000AA separado por ";"
+    # Rastreio de até 50 códigos!
     "objetos": "AA000000000AA; AA000000000AA; AA000000000AA"
 }
 

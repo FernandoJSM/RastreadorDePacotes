@@ -11,7 +11,7 @@ O código de rastreamento deve seguir o formato AA000000000AA, conforme o padrã
 ### ALGORITMOS:
 singe_code.py: Resultado de apenas um código de rastreio, listando todos os eventos do pacote.
 
-multiple_codes.py: Resultado de vários códigos de rastreio, listando o último evento de cada código.
+multiple_codes.py: Resultado de até 50 códigos de rastreio, listando o último evento de cada código.
 
 ### Possíveis implementações:
 #### Bot de Telegram:
