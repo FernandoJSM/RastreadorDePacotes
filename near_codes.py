@@ -5,11 +5,12 @@ import re
 from typing import List
 
 
-def web_scrape_tracking_data(tracking_code_list: List[str]):
+def web_scrape_tracking_data(tracking_code_list: List[str], skip_not_found: bool):
     """
         Get a code list and print the results obtained from the Correios BR website
     Args:
         tracking_code_list (List[str]): String with a list of tracking codes separated with a semicolon
+        skip_not_found (bool): Skip the print of tracking results that are not found
     """
 
     url = 'https://www2.correios.com.br/sistemas/rastreamento/ctrl/ctrlRastreamento.cfm?'
@@ -39,7 +40,8 @@ def web_scrape_tracking_data(tracking_code_list: List[str]):
             tracking_code = find_code.string
         else:
             if not_found != -1:
-                print(f'{tracking_code}: \t{not_found_str}')
+                if skip_not_found is False:
+                    print(f'{tracking_code}: \t{not_found_str}')
             else:
                 if find_date:
                     print(f'{tracking_code} - \t{find_date.string}: \t{event_str}')
@@ -47,7 +49,7 @@ def web_scrape_tracking_data(tracking_code_list: List[str]):
                     event_str = td.text
 
 
-def generate_and_print_near_codes(base_code: str, num_above: int, num_below: int) -> str:
+def generate_and_print_near_codes(base_code: str, num_above: int, num_below: int, skip_not_found:bool):
     """
         Generates a list of tracking codes that are near a base code in the UPU standard
         format.
@@ -55,6 +57,7 @@ def generate_and_print_near_codes(base_code: str, num_above: int, num_below: int
         base_code (str): Base tracking code that will be used to generate the other codes
         num_above (int): Number of tracking codes "above" the base tracking code
         num_below (int): Number of tracking codes "below" the base tracking code
+        skip_not_found (bool): Skip the print of tracking results that are not found
     Returns:
         tracking_code_list (str): String with a list of tracking codes separated with a semicolon
     """
@@ -69,10 +72,10 @@ def generate_and_print_near_codes(base_code: str, num_above: int, num_below: int
         new_code_validated = generate_check_digit(tracking_code=new_code)
         below_tracking_code_list.append(new_code_validated)
 
-    web_scrape_tracking_data(tracking_code_list=below_tracking_code_list)
+    web_scrape_tracking_data(tracking_code_list=below_tracking_code_list, skip_not_found=skip_not_found)
 
     print()
-    web_scrape_tracking_data(tracking_code_list=[base_code])
+    web_scrape_tracking_data(tracking_code_list=[base_code], skip_not_found=False)
     print()
 
     for i in range(num_above):
@@ -80,7 +83,7 @@ def generate_and_print_near_codes(base_code: str, num_above: int, num_below: int
         new_code_validated = generate_check_digit(tracking_code=new_code)
         above_tracking_code_list.append(new_code_validated)
 
-    web_scrape_tracking_data(tracking_code_list=above_tracking_code_list)
+    web_scrape_tracking_data(tracking_code_list=above_tracking_code_list, skip_not_found=skip_not_found)
 
 
 def generate_check_digit(tracking_code: str) -> str:
@@ -128,18 +131,27 @@ def validate_tracking_code(tracking_code: str) -> bool:
         return False
 
 
-def run(base_code: str, num_above: int, num_below: int):
+def run(base_code: str, num_above: int, num_below: int, skip_not_found: bool):
     """
         Runs application
     Args:
         base_code (str): Base tracking code that will be used to generate the other codes
         num_above (int): Number of tracking codes "above" the base tracking code
         num_below (int): Number of tracking codes "below" the base tracking code
+        skip_not_found (bool): Skip the print of tracking results that are not found
     """
+    if num_above > 50:
+        print('Variável \"num_above\" maior que 50.')
+        return
+    if num_below > 50:
+        print('Variável \"num_below\" maior que 50.')
+        return
+
     if validate_tracking_code(tracking_code=base_code.strip()):
         generate_and_print_near_codes(base_code=base_code.strip(),
                                       num_above=num_above,
-                                      num_below=num_below)
+                                      num_below=num_below,
+                                      skip_not_found=skip_not_found)
     else:
         print(f'Código \"{base_code.strip()}\" inválido, fora do formato AA000000000AA')
 
@@ -147,6 +159,7 @@ def run(base_code: str, num_above: int, num_below: int):
 if __name__ == '__main__':
     # Código de rastreio aqui no formato AA000000000AA
     base_code = 'AA000000000AA'
-    num_above = 20
-    num_below = 20
-    run(base_code=base_code, num_above=num_above, num_below=num_below)
+    num_above = 50
+    num_below = 50
+    skip_not_found = True
+    run(base_code=base_code, num_above=num_above, num_below=num_below, skip_not_found=skip_not_found)
