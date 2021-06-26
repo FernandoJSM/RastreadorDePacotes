@@ -24,11 +24,22 @@ tables = soup.find_all(name="td")
 if len(tables) == 0:
     print('Resultado não encontrado na base dos Correios BR.')
 
-for i_e in range(len(tables) // 3):
-    code_raw = tables[i_e * 3].text
-    code = re.sub('\n+', '', code_raw)
+not_found_str = 'O nosso sistema não possui dados sobre o objeto informado.'
 
-    event = tables[i_e * 3 + 1].text
-    date_loc = tables[i_e * 3 + 2].text
+for td in tables:
+    find_code = re.match(pattern=r'[A-Za-z]{2}[0-9]{9}[A-Za-z]{2}',
+                         string=re.sub(pattern=r'\n+', repl='', string=td.text))
+    find_date = re.match(pattern=r'[0-9]{2}/[0-9]{2}/[0-9]{4}',
+                         string=td.text)
+    not_found = td.text.find(not_found_str)
 
-    print(f'{code} - {date_loc}: {event}')
+    if find_code:
+        tracking_code = find_code.string
+    else:
+        if not_found != -1:
+            print(f'{tracking_code}: \t{not_found_str}')
+        else:
+            if find_date:
+                print(f'{tracking_code} - \t{find_date.string}: \t{event_str}')
+            else:
+                event_str = td.text
