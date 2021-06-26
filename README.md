@@ -8,6 +8,9 @@ BeautifulSoup para imprimir as informações do código no console.
 O código de rastreamento deve seguir o formato AA000000000AA, conforme o padrão 
 [UPU Standard](https://en.wikipedia.org/wiki/S10_(UPU_standard)).
 
+Detalhe: O maior problema de fazer webscraping de um serviço terceiro é que qualquer modificação no site onde é feita a
+requisição pode invalidar a aplicação.
+
 ### ALGORITMOS:
 * singe_code.py: Resultado de apenas um código de rastreio, listando todos os eventos do pacote.
 * multiple_codes.py: Resultado de até 50 códigos de rastreio, listando o último evento de cada código.
