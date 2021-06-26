@@ -9,11 +9,11 @@ O código de rastreamento deve seguir o formato AA000000000AA, conforme o padrã
 [UPU Standard](https://en.wikipedia.org/wiki/S10_(UPU_standard)).
 
 ### ALGORITMOS:
-singe_code.py: Resultado de apenas um código de rastreio, listando todos os eventos do pacote.
+* singe_code.py: Resultado de apenas um código de rastreio, listando todos os eventos do pacote.
+* multiple_codes.py: Resultado de até 50 códigos de rastreio, listando o último evento de cada código.
+* near_codes.py: Exemplo de aplicação que rastreia os códigos que estão "próximos" de um dado código
 
-multiple_codes.py: Resultado de até 50 códigos de rastreio, listando o último evento de cada código.
-
-### Possíveis implementações:
+### Possíveis aplicações:
 #### Bot de Telegram:
 Um bot onde os códigos são cadastrados e a cada atualização o usuário é notificado via mensagem.
 Um ótimo exemplo é o [RastreioBot](https://github.com/GabrielRF/RastreioBot), que inclusive tem várias funcionalidades
