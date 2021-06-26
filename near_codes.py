@@ -39,10 +39,10 @@ def web_scrape_tracking_data(tracking_code_list: List[str]):
             tracking_code = find_code.string
         else:
             if not_found != -1:
-                print(f'{tracking_code}: {not_found_str}')
+                print(f'{tracking_code}: \t{not_found_str}')
             else:
                 if find_date:
-                    print(f'{tracking_code} - {find_date.string}: {event_str}')
+                    print(f'{tracking_code} - \t{find_date.string}: \t{event_str}')
                 else:
                     event_str = td.text
 
