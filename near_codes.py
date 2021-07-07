@@ -5,12 +5,13 @@ from datetime import date
 from typing import List
 
 
-def web_scrape_tracking_data(tracking_code_list: List[str], skip_not_found: bool):
+def web_scrape_tracking_data(tracking_code_list: List[str], skip_not_found: bool, first_index:int):
     """
         Get a code list and print the results obtained from the Correios BR website
     Args:
         tracking_code_list (List[str]): String with a list of tracking codes separated with a semicolon
         skip_not_found (bool): Skip the print of tracking results that are not found
+        first_index (int): Index of the row to be printed
     """
 
     url = 'https://www2.correios.com.br/sistemas/rastreamento/ctrl/ctrlRastreamento.cfm?'
@@ -29,6 +30,7 @@ def web_scrape_tracking_data(tracking_code_list: List[str], skip_not_found: bool
 
     not_found_str = 'O nosso sistema não possui dados sobre o objeto informado.'
     today_str = date.today().strftime("%d/%m/%y")
+    row_index = first_index
 
     for td in tables:
         find_code = re.match(pattern=r'[A-Za-z]{2}[0-9]{9}[A-Za-z]{2}',
@@ -42,12 +44,15 @@ def web_scrape_tracking_data(tracking_code_list: List[str], skip_not_found: bool
         else:
             if not_found != -1:
                 if skip_not_found is False:
-                    print('{:13s}\t{:10s}\t{:20s}\t{}'.format(tracking_code, today_str, '', not_found_str))
+                    print('{:10s}\t{:13s}\t{:10s}\t{:20s}\t{}'.format(str(row_index), tracking_code, today_str, '',
+                                                                      not_found_str))
+                row_index += 1
             else:
                 if find_date:
                     location = find_date.string[10:].strip()
-                    print('{:13s}\t{:10s}\t{:20s}\t{}'.format(tracking_code, find_date.group(),
-                                                               location, event_str))
+                    print('{:10s}\t{:13s}\t{:10s}\t{:20s}\t{}'.format(str(row_index), tracking_code, find_date.group(),
+                                                                      location, event_str))
+                    row_index += 1
                 else:
                     event_str = td.text
 
@@ -68,7 +73,7 @@ def generate_and_print_near_codes(base_code: str, num_above: int, num_below: int
     below_tracking_code_list = []
     above_tracking_code_list = []
 
-    print('{:13s}\t{:10s}\t{:20s}\t{}'.format('Código', 'Data', 'Local', 'Evento'))
+    print('{:10s}\t{:13s}\t{:10s}\t{:20s}\t{}'.format('n', 'Código', 'Data', 'Local', 'Evento'))
 
     base_number = int(base_code[2:10])
 
@@ -77,10 +82,11 @@ def generate_and_print_near_codes(base_code: str, num_above: int, num_below: int
         new_code_validated = generate_check_digit(tracking_code=new_code)
         below_tracking_code_list.append(new_code_validated)
 
-    web_scrape_tracking_data(tracking_code_list=below_tracking_code_list, skip_not_found=skip_not_found)
+    web_scrape_tracking_data(tracking_code_list=below_tracking_code_list, skip_not_found=skip_not_found,
+                             first_index=-num_above)
 
     print()
-    web_scrape_tracking_data(tracking_code_list=[base_code], skip_not_found=False)
+    web_scrape_tracking_data(tracking_code_list=[base_code], skip_not_found=False, first_index=0)
     print()
 
     for i in range(num_above):
@@ -88,7 +94,8 @@ def generate_and_print_near_codes(base_code: str, num_above: int, num_below: int
         new_code_validated = generate_check_digit(tracking_code=new_code)
         above_tracking_code_list.append(new_code_validated)
 
-    web_scrape_tracking_data(tracking_code_list=above_tracking_code_list, skip_not_found=skip_not_found)
+    web_scrape_tracking_data(tracking_code_list=above_tracking_code_list, skip_not_found=skip_not_found,
+                             first_index=1)
 
 
 def generate_check_digit(tracking_code: str) -> str:
