@@ -11,7 +11,7 @@ O código de rastreamento deve seguir o formato AA000000000AA, conforme o padrã
 Detalhe: O maior problema de fazer webscraping de um serviço terceiro é que qualquer modificação no site onde é feita a
 requisição pode invalidar a aplicação.
 
-### ALGORITMOS:
+### Algoritmos:
 * singe_code.py: Resultado de apenas um código de rastreio, listando todos os eventos do pacote.
 * multiple_codes.py: Resultado de até 50 códigos de rastreio, listando o último evento de cada código.
 * near_codes.py: Exemplo de aplicação que rastreia os códigos que estão "próximos" de um dado código
